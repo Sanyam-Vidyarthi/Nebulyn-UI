@@ -1,11 +1,11 @@
 export const components = [
   {
     id: 1,
-    title: "Glassmorphism Card",
+    title: "Liquid Glass Card",
     description: "A beautiful card with frosted glass effect, perfect for modern dark mode interfaces.",
     category: "Cards",
     code: `
-/* Glassmorphism Card */
+/* Liquid Glass Card */
 .glass-card {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);

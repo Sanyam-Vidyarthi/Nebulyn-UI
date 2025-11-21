@@ -1,13 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ComponentCard from '../components/ComponentCard';
 import Button from '../components/Button';
 import ComponentModal from '../components/ComponentModal';
 import Toast from '../components/Toast';
+import Footer from '../components/Footer';
 import { components } from '../data/components';
-import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, Zap, Layout, Code, Star, ChevronRight, Github, Twitter, Disc } from 'lucide-react';
-import { Logo } from '../components/Logo';
+import { motion } from "motion/react";
+import { ArrowRight, Sparkles, Zap, Layout, Code, Star } from 'lucide-react';
 
 const LandingPage = () => {
     const [selectedComponent, setSelectedComponent] = useState(null);
@@ -31,8 +32,8 @@ const LandingPage = () => {
                     {/* Dynamic Background Elements */}
                     <div className="absolute inset-0 overflow-hidden pointer-events-none">
                         <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-gradient-to-r from-violet-600/20 via-fuchsia-600/20 to-cyan-600/20 blur-[120px] rounded-full opacity-50 animate-pulse" />
-                        <div className="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-violet-900/10 blur-[100px] rounded-full mix-blend-screen animate-float" />
-                        <div className="absolute bottom-[10%] right-[10%] w-[500px] h-[500px] bg-pink-900/10 blur-[100px] rounded-full mix-blend-screen animate-float" style={{ animationDelay: '2s' }} />
+                        <div className="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-violet-900/10 blur-[100px] rounded-full mix-blend-screen animate-blob" />
+                        <div className="absolute bottom-[10%] right-[10%] w-[500px] h-[500px] bg-pink-900/10 blur-[100px] rounded-full mix-blend-screen animate-blob" style={{ animationDelay: '2s' }} />
                     </div>
 
                     <div className="container relative z-10">
@@ -46,7 +47,7 @@ const LandingPage = () => {
                                 <span className="text-sm font-medium text-gray-300 tracking-wide">The Ultimate UI Kit v2.0</span>
                             </div>
 
-                            <h1 className="text-gradient-primary" style={{
+                            <h1 className="text-gradient-primary animate-text-shimmer" style={{
                                 fontSize: 'clamp(4rem, 9vw, 7.5rem)',
                                 fontWeight: '800',
                                 marginBottom: '2.5rem',
@@ -69,12 +70,16 @@ const LandingPage = () => {
                             </p>
 
                             <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
-                                <Button variant="primary" style={{ padding: '1rem 2.5rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    Browse Components <ArrowRight size={18} />
-                                </Button>
-                                <Button variant="secondary" style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
-                                    View Documentation
-                                </Button>
+                                <Link to="/marketplace">
+                                    <Button variant="primary" style={{ padding: '1rem 2.5rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        Browse Components <ArrowRight size={18} />
+                                    </Button>
+                                </Link>
+                                <Link to="/how-to-use">
+                                    <Button variant="secondary" style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
+                                        View Documentation
+                                    </Button>
+                                </Link>
                             </div>
                         </motion.div>
                     </div>
@@ -95,7 +100,15 @@ const LandingPage = () => {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: i * 0.15, duration: 0.6 }}
-                                    className="glass-panel group"
+                                    className="glass-panel group spotlight-card"
+                                    onMouseMove={(e) => {
+                                        const { currentTarget: target } = e;
+                                        const rect = target.getBoundingClientRect();
+                                        const x = e.clientX - rect.left;
+                                        const y = e.clientY - rect.top;
+                                        target.style.setProperty("--mouse-x", `${x}px`);
+                                        target.style.setProperty("--mouse-y", `${y}px`);
+                                    }}
                                     style={{
                                         padding: '3rem',
                                         borderRadius: '28px',
@@ -128,9 +141,11 @@ const LandingPage = () => {
                                 <h2 className="text-gradient" style={{ fontSize: '3.5rem', marginBottom: '1rem', fontWeight: '700', letterSpacing: '-0.03em' }}>Trending Now</h2>
                                 <p style={{ color: 'var(--text-secondary)', fontSize: '1.25rem', maxWidth: '500px' }}>Hand-picked components that are trending in the community.</p>
                             </div>
-                            <Button variant="ghost" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem' }}>
-                                View All Components <ArrowRight size={18} />
-                            </Button>
+                            <Link to="/marketplace">
+                                <Button variant="ghost" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem' }}>
+                                    View All Components <ArrowRight size={18} />
+                                </Button>
+                            </Link>
                         </div>
 
                         {/* Grid - Limited to 3 */}
@@ -179,53 +194,7 @@ const LandingPage = () => {
 
             </main>
 
-            <footer style={{
-                borderTop: '1px solid var(--border-subtle)',
-                padding: '6rem 0 3rem',
-                marginTop: 'auto',
-                background: '#020202',
-                position: 'relative'
-            }}>
-                <div className="container">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-                        <div className="col-span-1 md:col-span-2">
-                            <div className="mb-6">
-                                <Logo size="small" />
-                            </div>
-                            <p className="text-gray-400 text-lg leading-relaxed max-w-md">
-                                The ultimate resource for premium, copy-paste UI components. Built for developers who care about design.
-                            </p>
-                        </div>
-                        <div>
-                            <h4 className="text-white font-semibold mb-6 text-lg">Product</h4>
-                            <ul className="space-y-4 text-gray-400">
-                                <li><a href="#" className="hover:text-white transition-colors">Components</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Templates</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Changelog</a></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 className="text-white font-semibold mb-6 text-lg">Community</h4>
-                            <ul className="space-y-4 text-gray-400">
-                                <li><a href="#" className="hover:text-white transition-colors">Discord</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Twitter</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">GitHub</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">License</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-                        <p className="text-gray-500">&copy; 2025 UI/UX Marketplace. All rights reserved.</p>
-                        <div className="flex gap-6">
-                            <a href="#" className="text-gray-500 hover:text-white transition-colors"><Twitter size={20} /></a>
-                            <a href="#" className="text-gray-500 hover:text-white transition-colors"><Github size={20} /></a>
-                            <a href="#" className="text-gray-500 hover:text-white transition-colors"><Disc size={20} /></a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
 
             {/* Modals & Overlays */}
             {selectedComponent && (

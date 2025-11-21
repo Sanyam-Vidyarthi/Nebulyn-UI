@@ -9,29 +9,48 @@ export default function ComponentPreview({ component }) {
     if (!component) return null;
 
     switch (component.title) {
-        case "Glassmorphism Card":
+        case "Liquid Glass Card":
             return (
-                <div className="p-8 flex items-center justify-center bg-gradient-to-br from-gray-900 to-black min-h-[300px] w-full rounded-lg">
-                    <div className="glass-card max-w-sm w-full">
-                        <div className="flex items-center gap-4 mb-4">
-                            <div className="w-12 h-12 rounded-full bg-white/20"></div>
-                            <div>
-                                <div className="h-4 w-32 bg-white/20 rounded mb-2"></div>
-                                <div className="h-3 w-20 bg-white/10 rounded"></div>
+                <div className="min-h-[300px] w-full flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 rounded-lg">
+                    <div className="relative group perspective-1000">
+                        {/* Main glass card */}
+                        <div
+                            className="relative w-[340px] h-[220px] rounded-3xl p-8 
+                                       bg-white/[0.08] backdrop-blur-xl
+                                       border border-white/[0.15]
+                                       shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]
+                                       transition-all duration-500
+                                       group-hover:bg-white/[0.12] group-hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.4)]
+                                       group-hover:scale-[1.02]"
+                        >
+                            {/* Inner subtle glow */}
+                            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/[0.1] to-transparent opacity-50" />
+
+                            {/* Content */}
+                            <div className="relative z-10 h-full flex flex-col justify-between">
+                                <div>
+                                    <h3 className="text-white text-xl font-semibold mb-2">Liquid Glass</h3>
+                                    <p className="text-gray-300 text-sm">Premium frosted glass effect with depth and interactivity.</p>
+                                </div>
+
+                                {/* Bottom accent line */}
+                                <div className="flex items-center gap-2">
+                                    <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                                    <span className="text-xs text-white/50 font-mono">01</span>
+                                </div>
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <div className="h-3 w-full bg-white/10 rounded"></div>
-                            <div className="h-3 w-full bg-white/10 rounded"></div>
-                            <div className="h-3 w-2/3 bg-white/10 rounded"></div>
-                        </div>
+
+                        {/* Outer glow effect (very subtle) */}
+                        <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-cyan-500/5 to-violet-500/5 blur-xl -z-10 
+                                        opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </div>
                 </div>
             );
 
         case "Neon Button":
             return (
-                <div className="min-h-screen bg-slate-900 flex items-center justify-center p-8">
+                <div className="min-h-[300px] w-full bg-slate-900 flex items-center justify-center p-8 rounded-lg">
                     <button className="group relative px-12 py-4 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 text-white transition-all duration-300 hover:scale-105 overflow-visible">
                         {/* Neon glow effect */}
                         <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 blur-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
@@ -45,7 +64,7 @@ export default function ComponentPreview({ component }) {
                 </div>
             );
 
-        case "Animated Navbar":
+        case "Animated Navbar": {
             const navItems = [
                 { id: "home", icon: Home, label: "Home" },
                 { id: "profile", icon: User, label: "Profile" },
@@ -60,9 +79,9 @@ export default function ComponentPreview({ component }) {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="bg-gradient-to-r from-violet-100 via-purple-100 to-violet-100 rounded-full shadow-lg px-12 py-5"
+                        className="bg-gradient-to-r from-violet-100 via-purple-100 to-violet-100 rounded-full shadow-lg px-6 py-4"
                     >
-                        <div className="flex items-center gap-16">
+                        <div className="flex items-center gap-6">
                             {navItems.map((item, index) => {
                                 const Icon = item.icon;
                                 const isActive = activeItem === item.id;
@@ -86,10 +105,10 @@ export default function ComponentPreview({ component }) {
                                         >
                                             <Icon
                                                 className={`w-7 h-7 transition-colors duration-300 ${isActive
-                                                        ? "text-violet-600"
-                                                        : isHovered
-                                                            ? "text-violet-500"
-                                                            : "text-violet-400"
+                                                    ? "text-violet-600"
+                                                    : isHovered
+                                                        ? "text-violet-500"
+                                                        : "text-violet-400"
                                                     }`}
                                                 strokeWidth={isActive ? 2.5 : 2}
                                             />
@@ -115,6 +134,7 @@ export default function ComponentPreview({ component }) {
                     </motion.nav>
                 </div>
             );
+        }
 
         default:
             return (

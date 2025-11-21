@@ -1,15 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
 import connectDB from './db.js';
 import componentRoutes from './routes/componentRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import chatRoutes from './routes/chatRoutes.js';
 
 dotenv.config();
 
 connectDB();
 
 const app = express();
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
@@ -21,6 +23,8 @@ app.get('/', (req, res) => {
 
 // API Routes
 app.use('/api/components', componentRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

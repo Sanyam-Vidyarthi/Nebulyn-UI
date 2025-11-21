@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 import { Copy, Terminal, FileCode, CheckCircle, ChevronRight, Sparkles, Zap, Code2, Box } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion } from "motion/react";
 
 const HowToUse = () => {
     const containerVariants = {
@@ -230,7 +230,7 @@ const StepCard = ({ number, title, description, icon, gradient, borderColor, chi
     </motion.section>
 );
 
-const CodeBlock = ({ code, language, filename }) => (
+const CodeBlock = ({ code, filename }) => (
     <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#0d0d0d] shadow-2xl group/code">
         {filename && (
             <div className="flex items-center justify-between px-4 py-3 bg-white/5 border-b border-white/5">

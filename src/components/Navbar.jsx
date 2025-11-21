@@ -15,13 +15,13 @@ const Navbar = () => {
     return (
         <nav style={{
             padding: '1.25rem 0',
-            borderBottom: '1px solid var(--border-subtle)',
-            background: 'rgba(3, 3, 3, 0.7)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
+            background: 'rgba(3, 3, 3, 0.6)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
             position: 'sticky',
             top: 0,
-            zIndex: 100
+            zIndex: 100,
+            borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
         }}>
             <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <a href="/" onClick={handleLogoClick} style={{ textDecoration: 'none', cursor: 'pointer' }}>
@@ -34,7 +34,7 @@ const Navbar = () => {
                     {['Explore', 'How to Use', 'Components', 'Templates'].map((item) => (
                         <Link
                             key={item}
-                            to={item === 'How to Use' ? '/how-to-use' : '/'}
+                            to={item === 'How to Use' ? '/how-to-use' : (item === 'Explore' || item === 'Components' ? '/marketplace' : '/')}
                             style={{
                                 color: 'var(--text-secondary)',
                                 fontSize: '0.95rem',
@@ -52,7 +52,13 @@ const Navbar = () => {
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <Button variant="ghost" style={{ color: 'var(--text-secondary)' }}>Log In</Button>
+                    <Button
+                        variant="ghost"
+                        style={{ color: 'var(--text-secondary)' }}
+                        onClick={() => navigate('/login')}
+                    >
+                        Log In
+                    </Button>
                     <Button variant="primary" style={{ padding: '0.6rem 1.25rem', fontSize: '0.95rem' }}>Get All Access</Button>
                 </div>
             </div>
