@@ -80,10 +80,10 @@ const DashboardPage = () => {
                         {activeTab === 'purchased' && (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {purchases.length > 0 ? (
-                                    purchases.map((purchase) => (
+                                    purchases.filter(p => p.component).map((purchase) => (
                                         <div key={purchase._id} className="bg-zinc-900/50 border border-white/5 rounded-xl overflow-hidden hover:border-white/10 transition-colors group">
                                             <div className="h-40 bg-zinc-900 relative overflow-hidden">
-                                                {purchase.component.previewImage ? (
+                                                {purchase.component?.previewImage ? (
                                                     <img src={purchase.component.previewImage} alt={purchase.component.title} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <div className="absolute inset-0 flex items-center justify-center text-4xl">🎨</div>
@@ -130,7 +130,7 @@ const DashboardPage = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-white/5 text-zinc-300">
-                                        {purchases.map((purchase) => (
+                                        {purchases.filter(p => p.component).map((purchase) => (
                                             <tr key={purchase._id} className="hover:bg-white/5 transition-colors">
                                                 <td className="p-4">{purchase.component.title}</td>
                                                 <td className="p-4">{new Date(purchase.purchaseDate).toLocaleDateString()}</td>
@@ -154,7 +154,7 @@ const DashboardPage = () => {
 
                         {activeTab === 'licenses' && (
                             <div className="space-y-4">
-                                {purchases.map((purchase) => (
+                                {purchases.filter(p => p.component).map((purchase) => (
                                     <div key={purchase._id} className="bg-zinc-900/30 border border-white/5 rounded-xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
                                         <div>
                                             <h3 className="text-white font-medium mb-1">{purchase.component.title}</h3>
@@ -184,7 +184,7 @@ const DashboardPage = () => {
                         {activeTab === 'wishlist' && (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {wishlist.length > 0 ? (
-                                    wishlist.map((item) => (
+                                    wishlist.filter(w => w.component).map((item) => (
                                         <div key={item._id} className="bg-zinc-900/50 border border-white/5 rounded-xl overflow-hidden hover:border-white/10 transition-colors">
                                             <div className="p-5">
                                                 <div className="flex justify-between items-start mb-4">

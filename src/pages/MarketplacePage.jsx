@@ -166,7 +166,7 @@ const MarketplacePage = () => {
                         >
                             {filteredComponents.map((component, index) => (
                                 <motion.div
-                                    key={component.id}
+                                    key={component._id || component.id}
                                     layout
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
