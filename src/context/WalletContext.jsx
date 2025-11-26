@@ -171,8 +171,8 @@ export const WalletProvider = ({ children }) => {
         purchaseTokens,
         purchaseComponent,
         toggleWishlist,
-        isOwned: (componentId) => purchases.some(p => p.component._id === componentId || p.component === componentId),
-        isWishlisted: (componentId) => wishlist.some(w => w.component._id === componentId || w.component === componentId)
+        isOwned: (componentId) => purchases.some(p => p.component && (p.component._id === componentId || p.component === componentId)),
+        isWishlisted: (componentId) => wishlist.some(w => w.component && (w.component._id === componentId || w.component === componentId))
     };
 
     return (
