@@ -2,7 +2,7 @@ import React from 'react';
 import Button from './Button';
 import ComponentPreview from './ComponentPreview';
 import { useWallet } from '../context/WalletContext';
-import { Lock } from 'lucide-react';
+import { Lock, Download } from 'lucide-react';
 
 const ComponentModal = ({ component, onClose, onCopy }) => {
     const { isOwned, purchaseComponent, loading } = useWallet();
@@ -32,6 +32,16 @@ const ComponentModal = ({ component, onClose, onCopy }) => {
         } catch (err) {
             console.error('Failed to copy:', err);
         }
+    };
+
+    const handleDownload = () => {
+        const element = document.createElement("a");
+        const file = new Blob([codeSnippet], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `${component.title.replace(/\s+/g, '_')}.jsx`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
     };
 
     const handlePurchase = async () => {
@@ -167,7 +177,12 @@ const ComponentModal = ({ component, onClose, onCopy }) => {
                 }}>
                     <Button variant="secondary" onClick={onClose}>Close</Button>
                     {canViewCode && (
-                        <Button variant="primary" onClick={handleCopy}>Copy Code</Button>
+                        <>
+                            <Button variant="secondary" onClick={handleDownload} className="flex items-center gap-2">
+                                <Download size={16} /> Download JSX
+                            </Button>
+                            <Button variant="primary" onClick={handleCopy}>Copy Code</Button>
+                        </>
                     )}
                 </div>
             </div>

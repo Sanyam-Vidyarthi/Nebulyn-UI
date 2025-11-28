@@ -10,11 +10,14 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import { WalletProvider } from './context/WalletContext.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
+import ScrollToTop from './components/ScrollToTop.jsx';
+
 function App() {
   return (
     <AuthProvider>
       <WalletProvider>
         <Router>
+          <ScrollToTop />
           <Chatbot />
           <Routes>
             <Route path="/" element={<LandingPage />} />

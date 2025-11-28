@@ -8,6 +8,7 @@ import { components as initialComponents } from '../data/components'; // Fallbac
 
 import { motion } from "motion/react";
 import { Search, Filter, Sparkles, Grid, List, Zap, Layers, Loader2 } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 const MarketplacePage = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -25,7 +26,7 @@ const MarketplacePage = () => {
     const fetchComponents = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/api/components');
+            const response = await fetch(`${API_BASE_URL}/api/components`);
             const data = await response.json();
 
             if (Array.isArray(data)) {

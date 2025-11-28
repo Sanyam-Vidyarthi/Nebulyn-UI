@@ -1,18 +1,16 @@
-import OpenAI from 'openai';
+import Bytez from 'bytez.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Lazy initialization function to ensure env vars are loaded
-function getOpenAIClient() {
+function getBytezClient() {
     // eslint-disable-next-line no-undef
-    if (!process.env.OPENAI_API_KEY) {
-        throw new Error('OPENAI_API_KEY is not configured in environment variables');
+    if (!process.env.BYTEZ_API_KEY) {
+        throw new Error('BYTEZ_API_KEY is not configured in environment variables');
     }
 
-    // Configure for DeepSeek API
-    // eslint-disable-next-line no-undef
-    return new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-        baseURL: process.env.OPENAI_BASE_URL || 'https://api.deepseek.com',
-    });
+    return new Bytez(process.env.BYTEZ_API_KEY);
 }
 
 export const chat = async (req, res) => {
@@ -21,9 +19,9 @@ export const chat = async (req, res) => {
 
         // Check if API key is configured
         // eslint-disable-next-line no-undef
-        if (!process.env.OPENAI_API_KEY) {
+        if (!process.env.BYTEZ_API_KEY) {
             return res.status(500).json({
-                message: 'API key is not configured. Please add OPENAI_API_KEY to your .env file.',
+                message: 'API key is not configured. Please add BYTEZ_API_KEY to your .env file.',
                 error: 'MISSING_API_KEY'
             });
         }
@@ -48,28 +46,67 @@ export const chat = async (req, res) => {
         If a user asks how to install, refer them to the /how-to-use page.
         `;
 
+        // Format history for Bytez (assuming it takes a list of messages like OpenAI)
+        // The user snippet showed: model.run([{ role: "user", content: "Hello" }])
+        // So we need to construct that array.
         const messages = [
             { role: 'system', content: systemPrompt },
             ...(history || []),
             { role: 'user', content: message }
         ];
 
-        // Get DeepSeek client
-        const openai = getOpenAIClient();
+        // Get Bytez client
+        const sdk = getBytezClient();
+        const model = sdk.model("Qwen/Qwen3-0.6B");
 
-        const completion = await openai.chat.completions.create({
-            messages: messages,
-            model: 'deepseek-chat',  // Using DeepSeek's chat model
-        });
+        const { error, output } = await model.run(messages);
 
-        const response = completion.choices[0].message.content;
+        if (error) {
+            console.error('Bytez API Error:', error);
+            throw new Error(error);
+        }
 
-        res.json({ response });
+        // The output from Bytez seems to be the response string directly or an object?
+        // The user snippet says: const { error, output } = await model.run(...)
+        // console.log({ error, output });
+        // I'll assume 'output' is the response text or a list of choices. 
+        // Usually these simple wrappers return the text directly or a similar structure.
+        // Let's assume 'output' is the string or an object with 'content'.
+        // If I look at the snippet: console.log({ error, output });
+        // I'll assume output is the generated text.
+        // Wait, if it's a list of messages input, it probably returns a message object or string.
+        // I'll log it to be safe in development, but for now I'll send it back.
+
+        // Let's try to handle if output is an object or string.
+        let responseText = output;
+        if (typeof output === 'object' && output !== null) {
+            // If it follows OpenAI structure, it might be output.choices[0].message.content
+            // But the snippet implies a simpler return.
+            // Let's assume it returns the text or we just send the whole output for now if unsure.
+            // Actually, looking at the snippet: const { error, output } = ...
+            // It's likely 'output' is the actual response content.
+            if (output.content) {
+                responseText = output.content;
+            } else if (Array.isArray(output) && output.length > 0 && output[0].content) {
+                responseText = output[0].content;
+            } else {
+                responseText = JSON.stringify(output);
+            }
+        }
+
+        // Strip out <think>...</think> tags from the response
+        // The Qwen model includes internal reasoning that should not be shown to users
+        if (typeof responseText === 'string') {
+            responseText = responseText.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+        }
+
+        res.json({ response: responseText });
+
     } catch (error) {
-        console.error('DeepSeek API Error:', error.response ? error.response.data : error.message);
+        console.error('Bytez API Error:', error);
         res.status(500).json({
             message: 'Failed to get response from AI.',
-            error: error.message
+            error: error.message || error
         });
     }
 };

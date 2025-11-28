@@ -1,6 +1,8 @@
 import React from 'react';
 
-const Button = ({ children, variant = 'primary', className = '', ...props }) => {
+import { Link } from 'react-router-dom';
+
+const Button = ({ children, variant = 'primary', className = '', href, ...props }) => {
     const baseStyle = {
         padding: '0.75rem 1.5rem',
         borderRadius: '8px',
@@ -13,6 +15,7 @@ const Button = ({ children, variant = 'primary', className = '', ...props }) => 
         alignItems: 'center',
         justifyContent: 'center',
         gap: '0.5rem',
+        textDecoration: 'none', // Ensure links don't have underline
     };
 
     const variants = {
@@ -32,9 +35,19 @@ const Button = ({ children, variant = 'primary', className = '', ...props }) => 
         }
     };
 
+    const combinedStyle = { ...baseStyle, ...variants[variant] };
+
+    if (href) {
+        return (
+            <Link to={href} style={combinedStyle} className={className} {...props}>
+                {children}
+            </Link>
+        );
+    }
+
     return (
         <button
-            style={{ ...baseStyle, ...variants[variant] }}
+            style={combinedStyle}
             className={className}
             {...props}
         >

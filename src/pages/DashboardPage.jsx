@@ -7,10 +7,21 @@ import Button from '../components/Button';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
+import ComponentModal from '../components/ComponentModal';
+import Toast from '../components/Toast';
+
 const DashboardPage = () => {
     const { user } = useAuth();
     const { tokens, purchases, wishlist, loading, isOwned } = useWallet();
     const [activeTab, setActiveTab] = useState('purchased');
+    const [selectedComponent, setSelectedComponent] = useState(null);
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+
+    const showNotification = (msg) => {
+        setToastMessage(msg);
+        setShowToast(true);
+    };
 
     const tabs = [
         { id: 'purchased', label: 'Purchased Items', icon: Package },
@@ -22,7 +33,18 @@ const DashboardPage = () => {
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
-        // Could add a toast here
+        showNotification('Copied to clipboard!');
+    };
+
+    const handleDownload = (component) => {
+        const element = document.createElement("a");
+        const file = new Blob([component.code], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `${component.title.replace(/\s+/g, '_')}.jsx`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+        showNotification('Download started!');
     };
 
     return (
@@ -89,12 +111,19 @@ const DashboardPage = () => {
                                                     <div className="absolute inset-0 flex items-center justify-center text-4xl">🎨</div>
                                                 )}
                                                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                    <Button variant="secondary" className="flex items-center gap-2">
+                                                    <Button
+                                                        variant="secondary"
+                                                        className="flex items-center gap-2"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDownload(purchase.component);
+                                                        }}
+                                                    >
                                                         <Download size={16} /> Download
                                                     </Button>
                                                 </div>
                                             </div>
-                                            <div className="p-5">
+                                            <div className="p-5 cursor-pointer" onClick={() => setSelectedComponent(purchase.component)}>
                                                 <h3 className="text-white font-semibold mb-1">{purchase.component.title}</h3>
                                                 <p className="text-zinc-500 text-sm mb-4">Purchased on {new Date(purchase.purchaseDate).toLocaleDateString()}</p>
                                                 <div className="flex items-center justify-between">
@@ -136,7 +165,10 @@ const DashboardPage = () => {
                                                 <td className="p-4">{new Date(purchase.purchaseDate).toLocaleDateString()}</td>
                                                 <td className="p-4">v1.0</td>
                                                 <td className="p-4 text-right">
-                                                    <button className="text-violet-400 hover:text-violet-300 text-sm font-medium">
+                                                    <button
+                                                        onClick={() => handleDownload(purchase.component)}
+                                                        className="text-violet-400 hover:text-violet-300 text-sm font-medium"
+                                                    >
                                                         Download Again
                                                     </button>
                                                 </td>
@@ -258,6 +290,21 @@ const DashboardPage = () => {
                 </div>
             </div>
             <Footer />
+
+            {selectedComponent && (
+                <ComponentModal
+                    component={selectedComponent}
+                    onClose={() => setSelectedComponent(null)}
+                    onCopy={() => showNotification('Code copied to clipboard!')}
+                />
+            )}
+
+            {showToast && (
+                <Toast
+                    message={toastMessage}
+                    onClose={() => setShowToast(false)}
+                />
+            )}
         </div>
     );
 };

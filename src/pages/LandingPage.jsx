@@ -9,13 +9,29 @@ import Footer from '../components/Footer';
 import { components } from '../data/components';
 import { motion } from "motion/react";
 import { ArrowRight, Sparkles, Zap, Layout, Code, Star } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 const LandingPage = () => {
     const [selectedComponent, setSelectedComponent] = useState(null);
     const [showToast, setShowToast] = useState(false);
 
-    // Limit to top 3 "Featured" components for the landing page to reduce clutter
-    const featuredComponents = components.slice(0, 3);
+    const [featuredComponents, setFeaturedComponents] = useState([]);
+
+    React.useEffect(() => {
+        const fetchFeatured = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/components`);
+                if (response.ok) {
+                    const data = await response.json();
+                    // Take first 3 or random 3
+                    setFeaturedComponents(data.slice(0, 3));
+                }
+            } catch (error) {
+                console.error('Error fetching featured components:', error);
+            }
+        };
+        fetchFeatured();
+    }, []);
 
     return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)' }}>

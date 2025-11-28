@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import { API_BASE_URL } from '../config/api';
 
 const WalletContext = createContext({});
 
@@ -32,7 +33,7 @@ export const WalletProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             if (!token) return;
 
-            const response = await fetch('http://localhost:5000/api/wallet/balance', {
+            const response = await fetch(`${API_BASE_URL}/api/wallet/balance`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -50,7 +51,7 @@ export const WalletProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             if (!token) return;
 
-            const response = await fetch('http://localhost:5000/api/purchases/my-purchases', {
+            const response = await fetch(`${API_BASE_URL}/api/purchases/my-purchases`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -68,7 +69,7 @@ export const WalletProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             if (!token) return;
 
-            const response = await fetch('http://localhost:5000/api/wishlist/my-wishlist', {
+            const response = await fetch(`${API_BASE_URL}/api/wishlist/my-wishlist`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -86,7 +87,7 @@ export const WalletProvider = ({ children }) => {
             setLoading(true);
             const token = localStorage.getItem('token');
 
-            const response = await fetch('http://localhost:5000/api/wallet/purchase-tokens', {
+            const response = await fetch(`${API_BASE_URL}/api/wallet/purchase-tokens`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -115,7 +116,7 @@ export const WalletProvider = ({ children }) => {
             setLoading(true);
             const token = localStorage.getItem('token');
 
-            const response = await fetch(`http://localhost:5000/api/purchases/purchase/${componentId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/purchases/purchase/${componentId}`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -142,8 +143,8 @@ export const WalletProvider = ({ children }) => {
             const isWishlisted = wishlist.some(w => w.component._id === componentId || w.component === componentId);
 
             const url = isWishlisted
-                ? `http://localhost:5000/api/wishlist/remove/${componentId}`
-                : `http://localhost:5000/api/wishlist/add/${componentId}`;
+                ? `${API_BASE_URL}/api/wishlist/remove/${componentId}`
+                : `${API_BASE_URL}/api/wishlist/add/${componentId}`;
 
             const method = isWishlisted ? 'DELETE' : 'POST';
 
